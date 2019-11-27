@@ -7,7 +7,6 @@ import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.eclipse.microprofile.health.HealthCheckResponseBuilder;
 import org.eclipse.microprofile.health.Liveness;
-import uk.gov.ons.census.fwmt.events.component.GatewayEventManager;
 import uk.gov.ons.census.fwmt.jobservice.services.QueueService;
 
 import javax.inject.Inject;
@@ -19,7 +18,6 @@ import static uk.gov.ons.census.fwmt.jobservice.logging.GatewayEventLogger.RABBI
 public class RabbitMQHealth implements HealthCheck {
   @Inject QueueService queueService;
 
-  @Inject GatewayEventManager gatewayEventManager;
 
   private void tryGetCount(String name, Promise<Void> promise) {
     queueService.client.messageCount(name, gaResult -> {
@@ -59,9 +57,7 @@ public class RabbitMQHealth implements HealthCheck {
     HealthCheckResponse response = responseBuilder.build();
 
     if (response.getState() == HealthCheckResponse.State.UP) {
-      gatewayEventManager.triggerEvent("<N/A>", RABBIT_QUEUE_UP);
     } else {
-      gatewayEventManager.triggerErrorEvent(this.getClass(), "Cannot reach RabbitMQ", "<NA>", RABBIT_QUEUE_DOWN);
     }
 
     return response;

@@ -1,6 +1,5 @@
 package uk.gov.ons.census.fwmt.jobservice.resources;
 
-import uk.gov.ons.census.fwmt.common.error.GatewayException;
 import uk.gov.ons.census.fwmt.jobservice.services.QueueService;
 
 import javax.inject.Inject;
@@ -14,7 +13,7 @@ public class QueueResource {
 
   @GET
   @Path("/processDLQ")
-  public String startDLQProcessor() throws GatewayException {
+  public String startDLQProcessor() {
     service.dumpDLQtoQueue();
     return "Transferring Gateway Action DLQ to Gateway Action Queue";
   }

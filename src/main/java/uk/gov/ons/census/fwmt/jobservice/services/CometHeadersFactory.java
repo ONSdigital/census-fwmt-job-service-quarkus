@@ -8,7 +8,6 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.ext.ClientHeadersFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.gov.ons.census.fwmt.common.error.GatewayException;
 
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
@@ -40,7 +39,7 @@ public class CometHeadersFactory implements ClientHeadersFactory {
     return this.auth != null && auth.getExpiresOnDate().after(new Date());
   }
 
-  private void auth() throws GatewayException {
+  private void auth() {
     ExecutorService service = Executors.newFixedThreadPool(1);
     try {
       AuthenticationContext context = new AuthenticationContext(authority, false, service);
@@ -53,7 +52,7 @@ public class CometHeadersFactory implements ClientHeadersFactory {
       String errorMsg = "Failed to Authenticate with Totalmobile";
       log.error(errorMsg);
       // GatewayEventsConfig.FAILED_TM_AUTHENTICATION
-      throw new GatewayException(GatewayException.Fault.SYSTEM_ERROR, errorMsg, e);
+      throw new RuntimeException();
     } finally {
       service.shutdown();
     }
@@ -66,8 +65,8 @@ public class CometHeadersFactory implements ClientHeadersFactory {
     if (!clientID.isEmpty() && !clientSecret.isEmpty() && !isAuthed()) {
       try {
         auth();
-      } catch (GatewayException e) {
-        log.error(e.toString());
+      } catch (Exception e) {
+        throw new RuntimeException();
       }
     }
     return newHeaders;
