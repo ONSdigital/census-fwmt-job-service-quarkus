@@ -1,0 +1,71 @@
+// this block is necessary to make enforcedPlatform work for Quarkus plugin available
+// only locally (snapshot) that is also importing the Quarkus BOM
+buildscript {
+    repositories {
+        mavenLocal()
+    }
+    dependencies {
+        classpath "io.quarkus:quarkus-gradle-plugin:${quarkusVersion}"
+    }
+}
+
+plugins {
+    id 'java'
+    id 'idea'
+}
+
+apply plugin: 'io.quarkus'
+
+repositories {
+    mavenLocal()
+    if (project.findProperty('build.use-sdc-artifactory')) {
+        maven { url 'http://artifactory-sdc.onsdigital.uk/artifactory/libs-release' }
+        maven { url 'http://artifactory-sdc.onsdigital.uk/artifactory/libs-snapshot' }
+    }
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'io.quarkus:quarkus-smallrye-health'
+    implementation 'io.quarkus:quarkus-arc'
+    implementation 'io.quarkus:quarkus-vertx'
+    implementation 'io.quarkus:quarkus-smallrye-openapi'
+    implementation 'io.quarkus:quarkus-jackson'
+    implementation 'io.quarkus:quarkus-rest-client'
+    implementation 'io.quarkus:quarkus-resteasy-jsonb'
+    implementation 'io.quarkus:quarkus-resteasy'
+    implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
+
+    testImplementation 'io.quarkus:quarkus-junit5'
+    testImplementation 'io.rest-assured:rest-assured'
+
+    nativeTestImplementation 'io.quarkus:quarkus-junit5'
+    nativeTestImplementation 'io.rest-assured:rest-assured'
+
+    compile 'uk.gov.ons.census.fwmt:census-fwmt-canonical:1.0.16-RELEASE'
+    compile 'uk.gov.ons.census.fwmt:census-fwmt-events:1.0.18-RELEASE'
+    compile 'uk.gov.ons.census.fwmt:census-fwmt-common:1.0.43-RELEASE'
+
+    compile 'org.jsoup:jsoup:1.11.3'
+
+    compile 'io.vertx:vertx-amqp-client:3.8.3'
+    compile 'io.vertx:vertx-rabbitmq-client:3.8.3'
+    compile 'io.vertx:vertx-redis-client:3.8.3'
+
+    compile 'com.microsoft.azure:adal4j:1.6.0'
+
+    compile 'ma.glasnost.orika:orika-core:1.5.4'
+}
+
+group 'uk.gov.ons.census.fwmt'
+version '1.0.0-SNAPSHOT'
+
+compileJava {
+    options.compilerArgs << '-parameters'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+

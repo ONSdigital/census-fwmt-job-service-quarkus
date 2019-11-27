@@ -1,14 +1,32 @@
-.gradle
-/build/
+# Eclipse
+.project
+.classpath
+.settings/
+bin/
 
-# Ignore Gradle GUI config
-gradle-app.setting
+# IntelliJ
+.idea
+*.ipr
+*.iml
+*.iws
 
-# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
-!gradle-wrapper.jar
+# NetBeans
+nb-configuration.xml
 
-# Cache of project
-.gradletasknamecache
+# Visual Studio Code
+.vscode
 
-# # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
-# gradle/wrapper/gradle-wrapper.properties
+# OSX
+.DS_Store
+
+# Vim
+*.swp
+*.swo
+
+# patch
+*.orig
+*.rej
+
+# Gradle
+.gradle/
+build/
